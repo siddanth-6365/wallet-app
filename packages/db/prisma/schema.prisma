@@ -14,21 +14,48 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  email       String?  @unique
-  name        String? 
-  number      String  @unique
-  password    String
+  id           Int            @id @default(autoincrement())
+  email        String?        @unique
+  name         String?
+  number       String         @unique
+  password     String
+  Transcations Transcations[]
+  Balance      Balance[]
 }
 
 model Merchant {
-  id          Int     @id @default(autoincrement())
-  email       String  @unique
-  name        String?
-  auth_type   AuthType   
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  auth_type AuthType
+}
+
+model Transcations {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  status     Status
+  token      String   @unique
+  provider   String
+  amount     Float
+  created_at DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Balance {
+  id     Int   @id @default(autoincrement())
+  userId Int   @unique
+  amount Float
+  locked Int
+  user   User  @relation(fields: [userId], references: [id])
 }
 
 enum AuthType {
   Google
   Github
+}
+
+enum Status {
+  pending
+  completed
+  failed
 }
